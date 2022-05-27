@@ -6,12 +6,9 @@ import 'package:work_note/app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // final storage = await HydratedStorage.build(storageDirectory: kIsWeb  HydratedStorage.webStorageDirectory : await getTemporaryDirectory(),);
-  HydratedBlocOverrides.runZoned(
+  BlocOverrides.runZoned(
     () => runApp(const MyApp()),
     // storage: storage,
   );
-}
-
-getTemporaryDirectory() {
 }
 
