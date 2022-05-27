@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:work_note/blocs/bloc/work_note_event.dart';
@@ -52,7 +53,9 @@ final TextEditingController _controller = TextEditingController();
                               Navigator.pop(context);
                             }, child: Text("Cancle")),
                             ElevatedButton(onPressed: (){
-                              var note = WorkNoteModel(title: _controller.text);
+                              var note = WorkNoteModel(title: _controller.text,
+                                id: Random().nextInt(1000),
+                              );
                               context.read<NoteBloc>().add(AddNote(workNoteModel: note));
                             }, child: Text("Save Note")),
                           ],
@@ -90,9 +93,12 @@ final TextEditingController _controller = TextEditingController();
                         trailing: Checkbox(
                           value: task[index].isDone,
                           onChanged: (value){
-                            
+                            context.read<NoteBloc>().add(UpdateNote(workNoteModel: task[index]));
+
                           }
                         ),
+                        onLongPress: ()=> context.read<NoteBloc>().add(DeleteNote(workNoteModel: task[index])),
+                         
                       );
                     }
                   ),
@@ -108,7 +114,7 @@ final TextEditingController _controller = TextEditingController();
           appBar: AppBar(
             title: Text("ALL Note"),
             actions: [
-              IconButton(onPressed: (){}, icon: Icon(Icons.add)),
+              IconButton(onPressed: ()=> ()=>_addNote(context), icon: Icon(Icons.add)),
             ],
           ),
         );
