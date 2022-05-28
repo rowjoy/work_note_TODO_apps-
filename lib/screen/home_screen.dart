@@ -1,80 +1,30 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:work_note/blocs/bloc/work_note_event.dart';
+import 'package:star_menu/star_menu.dart';
 import 'package:work_note/blocs/bloc/work_note_state.dart';
 import 'package:work_note/blocs/bloc_exports.dart';
+import 'package:work_note/helpers/bottom_model_sheet.dart';
 import 'package:work_note/model/work_note_model.dart';
+class HomeScreen extends StatelessWidget {
+ HomeScreen({ Key? key }) : super(key: key);
 
-import '../widget/note_list_widget.dart';
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({ Key? key }) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-
-final TextEditingController _controller = TextEditingController();
-
-
-  void _addNote(BuildContext context ){
-        showModalBottomSheet(
-          context: context,
-            builder: (context){
-              return SingleChildScrollView(
-                child: Container(
-                  padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: Container(
-                    height: 300,
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        Text("Add Note",style: TextStyle(fontSize: 20,color: Colors.red,fontWeight: FontWeight.bold),),
-                        SizedBox(height: 10,),
-                        TextFormField(
-                          controller: _controller,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            label: Text("Title"),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(onPressed: (){
-                              Navigator.pop(context);
-                            }, child: Text("Cancle")),
-                            ElevatedButton(onPressed: (){
-                              var note = WorkNoteModel(title: _controller.text,
-                                id: Random().nextInt(1000),
-                              );
-                              context.read<NoteBloc>().add(AddNote(workNoteModel: note));
-                            }, child: Text("Save Note")),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }
-        );
-    }
+ final CustomBottomSheet _bottomSheet = CustomBottomSheet();
+ StarMenuController? controller;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NoteBloc , WorkNoteState>(
       builder: ( context , state ){
         List<WorkNoteModel> task = state.allNote;
-        print(state.allNote);
         return Scaffold(
+        appBar: AppBar(
+            title: Text("ALL Note"),
+            actions: [
+              IconButton(onPressed: ()=> _bottomSheet.addNote(context), icon: Icon(Icons.add)),
+            ],
+        ),
         body: SafeArea(
           child: Column(
             // ignore: prefer_const_literals_to_create_immutables
@@ -88,34 +38,65 @@ final TextEditingController _controller = TextEditingController();
                   child: ListView.builder(
                     itemCount: task.length,
                     itemBuilder: (context , index){
-                      return ListTile(
-                        title: Text("${task[index].title}"),
-                        trailing: Checkbox(
-                          value: task[index].isDone,
-                          onChanged: (value){
-                            context.read<NoteBloc>().add(UpdateNote(workNoteModel: task[index]));
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: ListTile(
+                            title: Text("Task 1"),
+                            subtitle: Text("The roll is roll"),
+                            trailing: StarMenu(
+                                controller: controller,
+                                params: StarMenuParameters(
+                                  shape: MenuShape.circle,
+                                  useScreenCenter: false,
+                                  checkItemsScreenBoundaries: true,
+                                  checkMenuScreenBoundaries: true,
+                                  onItemTapped: ( index ,controller){
+                                    if(index == 0){
+                                      print("Edit");
+                                      controller.closeMenu();
+                                    }else if(index == 2){
+                                      print("Done");
+                                      controller.closeMenu();
+                                    }else if(index == 1){
+                                      print("Delete");
+                                      controller.closeMenu();
+                                    }
+                                  }
+                                ),
+                                lazyItems: () async{
+                                  return [
+                                    CircleAvatar(child: Icon(Icons.edit)),
+                                    CircleAvatar(child: Icon(Icons.delete)),
+                                    CircleAvatar(child: Icon(Icons.done)),
 
-                          }
+                                  ];
+                                },
+                                
+                                child: Icon(Icons.more_vert),
+                              ),
+                          ),
                         ),
-                        onLongPress: ()=> context.read<NoteBloc>().add(DeleteNote(workNoteModel: task[index])),
-                         
                       );
+                      // return ListTile(
+                      //   title: Text("${task[index].title}"),
+                      //   trailing: Checkbox(
+                      //     value: task[index].isDone,
+                      //     onChanged: (value){
+                      //       context.read<NoteBloc>().add(UpdateNote(workNoteModel: task[index]));
+                      //     }
+                      //   ),
+                      //   onLongPress: ()=> context.read<NoteBloc>().add(DeleteNote(workNoteModel: task[index])),  
+                      // );
                     }
                   ),
                 ),
               ],
             ),
           ),
-
           floatingActionButton: FloatingActionButton(
-            onPressed: ()=>_addNote(context),
+            onPressed: ()=> _bottomSheet.addNote(context),
             child: Icon(Icons.add),
-          ),
-          appBar: AppBar(
-            title: Text("ALL Note"),
-            actions: [
-              IconButton(onPressed: ()=> ()=>_addNote(context), icon: Icon(Icons.add)),
-            ],
           ),
         );
       },

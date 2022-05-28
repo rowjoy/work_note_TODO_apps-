@@ -1,5 +1,6 @@
 
 import 'package:equatable/equatable.dart';
+import 'package:work_note/helpers/bottom_model_sheet.dart';
 
 class WorkNoteModel extends Equatable {
   final String? title;
@@ -57,6 +58,8 @@ class WorkNoteModel extends Equatable {
   List<Object?> get props => [
    id, title,isDone,isDeleted,
   ];
+
+
 
 
 
