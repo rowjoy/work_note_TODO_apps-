@@ -1,19 +1,24 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:work_note/helpers/bottom_model_sheet.dart';
+import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class WorkNoteModel extends Equatable {
   final String? title;
+  final String? subTitle;
   final int? id;
   bool? isDone;
   bool? isDeleted;
+ Color? tileColor;
 
 
   WorkNoteModel({
     this.id,
     this.title,
+    this.subTitle,
     this.isDone,
     this.isDeleted,
+    this.tileColor,
   }){
     isDone = isDone ?? false;
     isDeleted = isDeleted ?? false;
@@ -23,6 +28,7 @@ class WorkNoteModel extends Equatable {
   WorkNoteModel copyWith({
     int? id,
     String? title,
+    String? subTitle,
     bool? isDone,
     bool? isDeleted,
 
@@ -30,6 +36,7 @@ class WorkNoteModel extends Equatable {
     return WorkNoteModel(
       id: id ?? this.id,
       title:  title ?? this.title,
+      subTitle:  subTitle ?? this.subTitle,
       isDone:  isDone ?? this.isDone,
       isDeleted: isDeleted ?? this.isDeleted,
     );
@@ -40,8 +47,10 @@ class WorkNoteModel extends Equatable {
     return {
       "id":id,
       "title": title,
+      "subTitle":subTitle,
       "isDone": isDone,
       "isDeleted" : isDeleted,
+      "tileColor": tileColor,
     };
   }
 
@@ -49,8 +58,10 @@ class WorkNoteModel extends Equatable {
       return WorkNoteModel(
         id: map["id"],
         title: map["title"] ?? "",
+        subTitle: map["subTitle"] ?? "",
         isDone: map["isDone"],
         isDeleted: map["isDeleted"],
+        tileColor: map["tileColor"],
       );
   }
 
