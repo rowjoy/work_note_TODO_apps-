@@ -12,6 +12,7 @@ class WorkNoteState extends Equatable{
 
   @override
   List<Object?> get props => [allNote];
+  
 
   Map<String ,dynamic>toMap(){
     return {

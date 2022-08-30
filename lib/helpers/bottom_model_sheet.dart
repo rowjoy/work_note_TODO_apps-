@@ -37,7 +37,7 @@ final  CustomController _customController = CustomController();
                         SizedBox(height: 16,),
                         TextFormField(
                           controller:_customController.subTitleCOntroller,
-                          textInputAction: TextInputAction.newline,
+                          textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.multiline,
                           minLines: null,
                           maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
@@ -57,7 +57,6 @@ final  CustomController _customController = CustomController();
                               var note = WorkNoteModel(title: _customController.titlecontroller.text,
                                 subTitle: _customController.subTitleCOntroller.text,
                                 id: Random().nextInt(1000),
-                                // tileColor: Colors.red,
                               );
                               context.read<NoteBloc>().add(AddNote(workNoteModel: note));
                             }, child: const Text("Save Note")),

@@ -10,12 +10,20 @@ import 'package:work_note/blocs/bloc_exports.dart';
 import 'package:work_note/controller/text_field_controller.dart';
 import 'package:work_note/helpers/bottom_model_sheet.dart';
 import 'package:work_note/model/work_note_model.dart';
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
  HomeScreen({ Key? key }) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
  final CustomBottomSheet _bottomSheet = CustomBottomSheet();
+
  final CustomController _customController =CustomController();
+
  StarMenuController? controller;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NoteBloc , WorkNoteState>(
@@ -40,14 +48,14 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: ListView.builder(
                     itemCount: task.length,
-                    itemBuilder: (context , index){
+                    itemBuilder: (context , _index){
                       return Card(
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: ListTile(
                             // tileColor: task[index].tileColor,
-                            title: Text(task[index].title.toString()),
-                            subtitle: Text(task[index].subTitle.toString()),
+                            title: Text(task[_index].title.toString()),
+                            subtitle: Text(task[_index].subTitle.toString()),
                             trailing: StarMenu(
                                 controller: controller,
                                 params: StarMenuParameters(
@@ -58,12 +66,19 @@ class HomeScreen extends StatelessWidget {
                                   onItemTapped: ( index ,controller){
                                     if(index == 0){
                                       
+                                       _customController.titlecontroller.text = task[_index].title.toString();
+                                       _customController.subTitleCOntroller.text = task[_index].subTitle.toString();
+                                        if(_customController.titlecontroller.text.isNotEmpty){
+                                          _bottomSheet.addNote(context);
+                                          print("My task 1${_customController.titlecontroller.text}");
+                                        }
+                                     
                                       controller.closeMenu();
                                     }else if(index == 2){
                                       //done
                                       controller.closeMenu();
                                     }else if(index == 1){
-                                      context.read<NoteBloc>().add(DeleteNote(workNoteModel: task[index]));
+                                      context.read<NoteBloc>().add(DeleteNote(workNoteModel: task[_index]));
                                       controller.closeMenu();
                                     }
                                   }

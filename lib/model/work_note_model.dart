@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class WorkNoteModel extends Equatable {
-  final String? title;
+  String? title;
   final String? subTitle;
   final int? id;
   bool? isDone;
